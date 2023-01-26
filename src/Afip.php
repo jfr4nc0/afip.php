@@ -79,6 +79,7 @@ class Afip {
 	 **/
 	var $implemented_ws = array(
 		'ElectronicBilling',
+	    'ElectronicBilling_Details',
 		'RegisterScopeFour',
 		'RegisterScopeFive',
 		'RegisterInscriptionProof',
@@ -302,6 +303,18 @@ class Afip {
 				$options['ImpTotal'] = $params['FeCAEReq']['FeDetReq']['FECAEDetRequest']['ImpTotal'];
 			}
 		}
+		
+		if ($web_service === 'wsmtxca' && $operation === 'autorizarComprobanteRequest') {
+		    if (isset($params['comprobanteCAERequest']) && isset($params['comprobanteCAERequest']['codigoTipoComprobante'])) {
+		        $options['codigoTipoComprobante'] = $params['comprobanteCAERequest']['codigoTipoComprobante'];
+		    }
+		    
+		    
+		    
+		    if (isset($params['comprobanteCAERequest']) && isset($params['comprobanteCAERequest']['importeTotal'])) {
+		        $options['importeTotal'] = $params['comprobanteCAERequest']['importeTotal'];
+		    }
+		}
 
 		try {
 			$this->mixpanel->track($web_service.'.'.$operation, $options);
@@ -371,7 +384,7 @@ class AfipWebService
 	/**
 	 * Web service SOAP version
 	 *
-	 * @var intenger
+	 * @var 
 	 **/
 	var $soap_version;
 
@@ -506,6 +519,7 @@ class AfipWebService
 				'stream_context' => stream_context_create(['ssl'=> ['ciphers'=> 'AES256-SHA','verify_peer'=> false,'verify_peer_name'=> false]])
 			));
 		}
+		
 
 		$results = $this->soap_client->{$operation}($params);
 
