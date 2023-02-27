@@ -1,7 +1,7 @@
 <?php
 include '../src/Afip.php'; 
 
-$date = new DateTime($fecha_hoy);
+$date = new DateTime('Ymd');
 $date->add(new DateInterval('P4D'));
 $fecha_emision = $date->format("Y-m-d");
 
